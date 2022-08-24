@@ -1,58 +1,54 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+<div>
+<h1>TIC-TAC-TOE</h1>
+<div class="colorP1 , skinSelect">
+  <p>Player 1</p>
+  <div class='flex'>
+    <SkinSelector :name="skin" v-for="(skin, index) of skins" :key="index" @click="Selectskin(1)">
+    </SkinSelector>
   </div>
+</div>
+
+</div>
 </template>
 
 <script>
+import SkinSelector from './SkinSelector.vue'
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  name: 'TicTacToe',
+  components: {
+    SkinSelector
+  },
+ data() {
+  return {
+    skins: ['\u2605', "blue"],
+    playerSkin: ['dzs','sfe'],
+    item: '',
+  }
+ },
+ methods: {
+    Selectskin (player){
+       this.playerSkin[player] = this.skin;
+       console.log(this.item);
+    },
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.colorP1{
+  background-color:red;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.colorP2{
+  background-color:blue;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.skinSelect{
+  width:100%;
+  height:auto;
 }
-a {
-  color: #42b983;
-}
+.flex {
+        display:flex;
+        flex-wrap:wrap;
+        }
 </style>
