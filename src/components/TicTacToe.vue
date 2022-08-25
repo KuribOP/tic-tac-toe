@@ -18,19 +18,19 @@
     <input type='button' class='startButton' value='START' @click="StartGame()"/>
   </div>
   <div id='gameScreen' class='hide'>
-    <Grid v-for="">
-    </Grid>
+    <GridGame v-for="n in (col*row)" :key="n">
+    </GridGame>
   </div>
 </template>
 
 <script>
 import SkinSelector from './SkinSelector.vue'
-import Grid from './Grid.vue'
+import GridGame from './GridGame.vue'
 export default {
   name: 'TicTacToe',
   components: {
-    SkinSelector
-    Grid
+    SkinSelector,
+    GridGame
   },
  data() {
   return {

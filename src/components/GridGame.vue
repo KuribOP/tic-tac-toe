@@ -1,10 +1,10 @@
 <template>
-    <input type='button' id="skin" v-bind:value='name' />
+    <p>oi</p>
 </template>
 
     <script>
         export default {
-            name: 'Grid',
+            name: 'GridGame',
             data() {
                 return {
                 }
@@ -14,3 +14,7 @@
             }
         }
     </script>
+
+    <style scoped>
+ 
+    </style>
