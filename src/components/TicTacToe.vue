@@ -17,9 +17,11 @@
     </div>
     <input type='button' class='startButton' value='START' @click="StartGame()"/>
   </div>
-  <div id='gameScreen' class='hide'>
-    <GridGame v-for="n in (col*row)" :key="n">
-    </GridGame>
+  <div id='gameScreen' class='hide gameScreen'>
+    <div class='grid'>
+      <GridGame v-bind:id='"Box" + n'  v-for="n in (col*row)" :key="n" @click="PlaceSymbol(n)">
+      </GridGame>
+    </div>
   </div>
 </template>
 
@@ -38,6 +40,8 @@ export default {
     playerSkins: ['',''],
     col: 3,
     row: 3,
+    turnPlayer: 0,
+    winCombination: {},
   }
  },
  methods: {
@@ -80,10 +84,32 @@ export default {
     },
     StartGame (){
       if(this.playerSkins[0] && this.playerSkins[1]){
+        document.querySelector('.grid').style.setProperty('--col', this.col);
+        document.querySelector('.grid').style.setProperty('--row', this.row);
         document.getElementById('titleScreen').classList.add('hide');
         document.getElementById('gameScreen').classList.remove('hide');
+        /*let i = 1;
+        for(let nRow = 0; nRow < this.row; nRow++){
+          this.boxInGrid['row' + nRow] = { };
+          for(let nCol = 0; nCol < this.col; nCol++){
+            this.boxInGrid['row'+nRow]['col'+nCol] = i; 
+            i++; 
+          }
+        }*/
       }
     },
+    PlaceSymbol(index){
+      let box = document.getElementById('Box' + index);
+      if(!box.innerHTML){
+        if(this.turnPlayer % 2 == 0){
+          box.innerHTML = this.playerSkins[0];
+        }else{
+          box.innerHTML = this.playerSkins[1];
+        }
+        this.turnPlayer += 1;
+      }
+    },
+    //calcul gagnant : n*maxRow+1,n*maxRow+2,n*maxRow+3 ... autant que de col 
   },
 }
 
@@ -133,8 +159,21 @@ xhr.send(null);*/
   font-size:10vh;
 }
 
+.gameScreen{
+  display:flex;
+  justify-content:center;
+}
+
 .hide{
   display:none;
 }
+
+.grid{
+  --col: 3;
+  --row: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--col) , 1fr);
+}
+
 
 </style>
