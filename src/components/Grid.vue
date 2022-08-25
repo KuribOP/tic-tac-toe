@@ -4,7 +4,7 @@
 
     <script>
         export default {
-            name: 'SkinSelector',
+            name: 'Grid',
             data() {
                 return {
                 }
@@ -14,14 +14,3 @@
             }
         }
     </script>
-
-    <style scoped>
-        input {
-            height:20vh;
-            width:20vh;
-            margin:10px;
-            font-size:10vh;
-        }
-        
-        
-    </style>
