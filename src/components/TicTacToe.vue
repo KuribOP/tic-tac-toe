@@ -41,7 +41,18 @@ export default {
     col: 3,
     row: 3,
     turnPlayer: 0,
-    winCombination: {},
+    winCombinations: {
+      1: ['1','2','3'],
+      2: ['4','5','6'],
+      3: ['7','8','9'],
+      4: ['1','5','9'],
+      5: ['3','5','7'],
+      6: ['1','4','7'],
+      7: ['2','5','8'],
+      8: ['3','6','9']
+    },
+    player1Check: [],
+    player2Check: []
   }
  },
  methods: {
@@ -103,11 +114,40 @@ export default {
       if(!box.innerHTML){
         if(this.turnPlayer % 2 == 0){
           box.innerHTML = this.playerSkins[0];
+          this.player1Check += index;
         }else{
           box.innerHTML = this.playerSkins[1];
+          this.player2Check += index;
         }
+        if(this.turnPlayer >= 4){
+            for(let element in this.winCombinations){
+              let Win = this.winCombinations[element].every(this.checkIfWin);
+              if(Win == true){
+                console.log('win');
+              }
+            }
+          }
         this.turnPlayer += 1;
       }
+    },
+    checkIfWin(winCombination, index, array){
+      let playerWon = false;
+      let counter = 0;
+      let playerCheck;
+      if(this.turnPlayer % 2 == 0){
+        playerCheck = this.player1Check;
+      }else{
+        playerCheck = this.player2Check;
+      }
+      for(let element of playerCheck){
+        if(array.includes(element)){
+          counter++;
+        }
+      }
+      if(counter >= 3){ 
+        playerWon=true;
+      }
+      return playerWon;
     },
     //calcul gagnant : n*maxRow+1,n*maxRow+2,n*maxRow+3 ... autant que de col 
   },
