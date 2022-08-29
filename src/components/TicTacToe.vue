@@ -1,43 +1,56 @@
 <template>
-  <div id='titleScreen'>
-    <div class='logo'></div>
-    <div class="colorP1 skinSelect">
-      <p class='marginPlayer'>Player 1</p>
-      <div class='flex wrap'>
-        <SkinSelector :name="skin" v-bind:id='"selectSkinP1" + index' v-for="(skin, index) of skins" :key="index" @click="SelectSkin(index,0)">
-        </SkinSelector> 
+  <div id='titleScreen' class='titleScreen court'>
+    <div class='flex'>
+      <div class="skinSelect colorP1 flex justifySelect">
+          <SpriteSelector :name='playerSkins[0]' class='idle'>
+          </SpriteSelector>
+        <div class='flex wrap'>
+          <SkinSelector :name="skin" v-bind:id='"selectSkinP1" + skin' v-for="(skin, index) of defenceSkins" :key="index" @click="SelectSkin(index,0)">
+          </SkinSelector> 
+        </div>
       </div>
-    </div>
-    <div class="colorP2 skinSelect">
-      <p class='marginPlayer'>Player 2</p>
-      <div class='flex wrap'>
-        <SkinSelector :name="skin" v-bind:id='"selectSkinP2" + index' v-for="(skin, index) of skins" :key="index" @click="SelectSkin(index,1)">
-        </SkinSelector>
+      <div class="skinSelect colorP2 flex justifySelect">
+        <div class='flex wrap'>
+          <SkinSelector :name="skin" v-bind:id='"selectSkinP2" + skin' v-for="(skin, index) of prosecutorSkins" :key="index" @click="SelectSkin(index,1)">
+          </SkinSelector>
+        </div>
+        <SpriteSelector :name='playerSkins[1]' class='idle'>
+        </SpriteSelector>
       </div>
     </div>
     <input type='button' class='startButton' value='START' @click="StartGame()"/>
   </div>
-  <div id='gameScreen' class='hide gameScreen'>
+  <div id='gameScreen' class='hide flex justifySelect court'>
+    <SpriteSelector :name='playerSkins[0] + this.state[0]' class='animation left'>
+    </SpriteSelector>
     <div class='grid'>
-      <GridGame v-bind:id='"Box" + n'  v-for="n in (col*row)" :key="n" @click="PlaceSymbol(n)">
+      <GridGame :row="this.row" v-bind:id='"Box" + n'  v-for="n in (col*row)" :key="n" @click="PlaceSymbol(n)">
       </GridGame>
     </div>
+    <SpriteSelector :name='playerSkins[1] + this.state[1]' class='animation'>
+    </SpriteSelector>
+    <div id='EndGame' class='absolute hide'><input type='button' value='Rejouer' class='gameButton' @click="RestartGame()"/><input type='button' value='Ecran titre' class='gameButton' @click="ReturnTitle()"/></div>
   </div>
 </template>
 
 <script>
+import SpriteSelector from './SpriteSelector.vue'
 import SkinSelector from './SkinSelector.vue'
 import GridGame from './GridGame.vue'
 export default {
   name: 'TicTacToe',
   components: {
+    SpriteSelector,
     SkinSelector,
     GridGame
   },
  data() {
   return {
-    skins: ['\u2717','\u2B58','\u2605', "\u269C", "\u2660", "\u2665", "\u2663", "\u2666"],
+    defenceSkins: ['phoenix','mia','gregory','apollo'],
+    prosecutorSkins: ['hunter','franziska','manfred','godot','payne','klavier'],
     playerSkins: ['',''],
+    token: ['GotIt','HoldIt','Objection','TakeThat'],
+    state: ['0','0'],
     col: 3,
     row: 3,
     turnPlayer: 0,
@@ -57,41 +70,25 @@ export default {
  },
  methods: {
     SelectSkin (index,playerNumber){
-      let opponentPlayer = 0;
-      let opponent;
-      let player;
-      let i = 0;
-      let color = 'blue';
       if (playerNumber == 0){
-            opponentPlayer = 1;
-            color = 'red';
+        this.playerSkins[playerNumber] = this.defenceSkins[index];
+        this.defenceSkins.forEach(element => {
+          if(element != this.defenceSkins[index]){
+            document.getElementById('selectSkinP1' + element).style.backgroundColor = "white";
+          }else{
+            document.getElementById('selectSkinP1' + this.defenceSkins[index]).style.backgroundColor = "grey";
           }
-      if(this.isTheSame(this.skins[index]))
-      {
-        this.playerSkins[playerNumber] = this.skins[index];
-        this.skins.forEach(skin => {
-          player = document.getElementById('selectSkinP' + (playerNumber + 1) + i);
-          opponent = document.getElementById('selectSkinP' + (opponentPlayer + 1) + i);
-          if(this.playerSkins[playerNumber] != skin && this.playerSkins[opponentPlayer] != skin){
-            player.style.backgroundColor = 'white';
-            opponent.style.backgroundColor = 'white';
-          }else if(this.playerSkins[playerNumber] == skin){
-            player.style.backgroundColor = 'grey';
-            opponent.style.backgroundColor = color;
-          }
-          i++;
         });
-
+      }else{
+        this.playerSkins[playerNumber] = this.prosecutorSkins[index];
+        this.prosecutorSkins.forEach(element => {
+          if(element != this.prosecutorSkins[index]){
+            document.getElementById('selectSkinP2' + element).style.backgroundColor = "white";
+          }else{
+            document.getElementById('selectSkinP2' + this.prosecutorSkins[index]).style.backgroundColor = "grey";
+          }
+        });
       }
-
-    },
-    isTheSame(skin){
-      let notEqual = true;
-      if(skin == this.playerSkins[0] || skin == this.playerSkins[1])
-      {
-        notEqual = false;
-      }
-      return(notEqual)
     },
     StartGame (){
       if(this.playerSkins[0] && this.playerSkins[1]){
@@ -99,33 +96,48 @@ export default {
         document.querySelector('.grid').style.setProperty('--row', this.row);
         document.getElementById('titleScreen').classList.add('hide');
         document.getElementById('gameScreen').classList.remove('hide');
-        /*let i = 1;
-        for(let nRow = 0; nRow < this.row; nRow++){
-          this.boxInGrid['row' + nRow] = { };
-          for(let nCol = 0; nCol < this.col; nCol++){
-            this.boxInGrid['row'+nRow]['col'+nCol] = i; 
-            i++; 
-          }
-        }*/
+        this.state[0] = Math.floor(Math.random() * 3);
       }
     },
     PlaceSymbol(index){
       let box = document.getElementById('Box' + index);
-      if(!box.innerHTML){
+      let randomNumber = Math.floor(Math.random() * 4);
+      if(!box.title && this.turnPlayer < 9){
         if(this.turnPlayer % 2 == 0){
-          box.innerHTML = this.playerSkins[0];
+          this.state[0] = 0;
+          this.state[1] = Math.floor(Math.random() * 3);
+          box.classList.add('blue'+ this.token[randomNumber]);
+          box.title = 'done';
           this.player1Check += index;
         }else{
-          box.innerHTML = this.playerSkins[1];
+          this.state[0] = Math.floor(Math.random() * 3);
+          this.state[1] = 0;
+          box.classList.add('red' + this.token[randomNumber]);
+          box.title = 'done';
           this.player2Check += index;
         }
         if(this.turnPlayer >= 4){
             for(let element in this.winCombinations){
               let Win = this.winCombinations[element].every(this.checkIfWin);
               if(Win == true){
-                console.log('win');
+                if(Win == true){
+                  if(this.turnPlayer % 2 == 0){
+                      this.state[0] = 4;
+                      this.state[1] = 3;
+
+                  }else{
+                      this.state[0] = 3;
+                      this.state[1] = 4;
+                  }
+                }
+                this.turnPlayer = 9;
+                document.getElementById('EndGame').classList.remove('hide');
               }
             }
+            if(this.turnPlayer == 8){
+                this.state[0] = 3;
+                this.state[1] = 3;
+              }
           }
         this.turnPlayer += 1;
       }
@@ -149,63 +161,87 @@ export default {
       }
       return playerWon;
     },
-    //calcul gagnant : n*maxRow+1,n*maxRow+2,n*maxRow+3 ... autant que de col 
+    RestartGame(){
+      let box;
+      this.state[0] = 0;
+      this.state[1] = 0;
+      let n=0;
+      for(let i=0; i<this.col*this.row; i++){
+        n++;
+        box = document.getElementById('Box' + n);
+        box.setAttribute('class', 'tokenSize');
+        box.removeAttribute('title');
+        document.getElementById('EndGame').classList.add('hide');
+        this.turnPlayer = 0;
+        this.player1Check = [];
+        this.player2Check = [];
+      }
+    },
+    ReturnTitle(){
+      this.RestartGame();
+      document.getElementById('titleScreen').classList.remove('hide');
+      document.getElementById('gameScreen').classList.add('hide');
+    }
   },
 }
-
-/*let xhr = new XMLHttpRequest();
-xhr.onreadystatechange = () => {
-  if(xhr.readyState === 4 && xhr.status === 200)
-  {
-    console.log(JSON.parse(xhr.response));
-  }
-};
-xhr.open('GET', 'https://api.github.com/users/KuribOP');
-xhr.send(null);*/
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.colorP1{
-  background-color:red;
-}
-.colorP2{
-  background-color:blue;
-}
+
 .skinSelect{
-  width:100%;
-  height:auto;
+  width:50%;
+  height:90vh;
 }
 
 .flex{
   display:flex;
 }
+
+.justifySelect{
+  justify-content: space-between;
+}
 .wrap {
   flex-wrap:wrap;
+  width:50vh;
   justify-content:center;
+  align-content:start;
 }
-.logo {
-  background-image:url(../assets/logo.png);
-  background-size:100% 100%;
-  height:20vh;
-  width:auto;
-  align:center;
-}
+
 .marginPlayer {
   margin-top:0;
 }
 
 .startButton{
-  font-size:10vh;
+  font-size:8vh;
+  height:10vh;
 }
 
-.gameScreen{
-  display:flex;
-  justify-content:center;
+.gameButton{
+  font-size:5vh;
+  height:7vh;
+}
+
+.colorP1{
+  background:  rgba(0, 0, 255, .3);
+}
+
+.colorP2{
+  background:  rgba(255, 0, 0, .3);
+}
+
+.left{
+  align-items:left;
 }
 
 .hide{
   display:none;
+}
+
+.absolute{
+  position:absolute;
+  margin-left: auto;
+  margin-right: auto;
+  bottom:0;
+  width:100%
 }
 
 .grid{
@@ -213,6 +249,19 @@ xhr.send(null);*/
   --row: 3;
   display: grid;
   grid-template-columns: repeat(var(--col) , 1fr);
+  height: 50vh;
+   margin: auto;
+}
+
+.titleScreen {
+  width:auto;
+  align:center;
+}
+
+.court{
+  background-image:url(../assets/EcranTitre.webp);
+  background-size:100% 100%;
+  height:100vh;
 }
 
 

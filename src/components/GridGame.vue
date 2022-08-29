@@ -1,5 +1,5 @@
 <template>
-    <div></div>
+    <div class='tokenSize'></div>
 </template>
 
     <script>
@@ -10,20 +10,47 @@
                 }
             },
             props: {
-                name:String,
+                row:Number,
             }
         }
     </script>
 
     <style scoped>
         div{
-            --heightSize: 20vh;
-            display:flex;
+            --heightSize:calc(100/row);
             width:20vh;
             height:var(--heightSize);
             border: 3px solid;
-            justify-content:center;
-            align-items: center;
-            font-size:calc(var(--heightSize) - 10vh);
         }
+
+        .tokenSize{
+            background-size:100% 100%;
+        }
+
+        .blueGotIt{
+            background-image: url(../assets/blueGotIt.png);
+        }
+        .blueHoldIt{
+            background-image: url(../assets/blueHoldIt.png);
+        }
+        .blueObjection{
+            background-image: url(../assets/blueObjection.png);
+        }
+        .blueTakeThat{
+            background-image: url(../assets/blueTakeThat.png);
+        }
+        
+        .redGotIt{
+            background-image: url(../assets/redGotIt.png);
+        }
+        .redHoldIt{
+            background-image: url(../assets/redHoldIt.png);
+        }
+        .redObjection{
+            background-image: url(../assets/redObjection.png);
+        }
+        .redTakeThat{
+            background-image: url(../assets/redTakeThat.png);
+        }
+
     </style>
